@@ -7,6 +7,7 @@ if [ "$1" = 'init' ]; then
   systemctl daemon-reload
   systemctl enable iptables
   systemctl enable elasticsearch
+  systemctl restart iptables
 fi
 
 exec "$@"

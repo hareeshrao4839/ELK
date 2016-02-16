@@ -11,6 +11,7 @@ if [ "$1" = 'init' ]; then
   systemctl enable iptables
   systemctl enable nginx
   chkconfig kibana on
+  systemctl restart iptables
   systemctl restart nginx
   /etc/init.d/kibana restart
 
