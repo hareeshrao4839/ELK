@@ -1,0 +1,3 @@
+server.host: "127.0.0.1"
+elasticsearch.url: "http://ELK_SERVER_IP:9200"
+
