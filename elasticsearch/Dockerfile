@@ -2,7 +2,7 @@
 FROM bbania/centos:base
 MAINTAINER "Bart Bania" <contact@bartbania.com>
 
-RUN yum install -q -y iptables-services git
+RUN yum install -q -y iptables-services git sshpass
 RUN yum clean all
 
 WORKDIR /tmp

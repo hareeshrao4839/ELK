@@ -2,7 +2,7 @@
 FROM bbania/centos:base
 MAINTAINER "Bart Bania" <contact@bartbania.com>
 
-RUN yum -q -y install nginx httpd-tools iptables-services git
+RUN yum -q -y install nginx httpd-tools iptables-services git sshpass
 RUN yum clean all
 
 COPY ./iptables /etc/sysconfig/iptables
