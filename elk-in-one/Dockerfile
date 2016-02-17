@@ -55,8 +55,6 @@ COPY ./filebeat.yml /etc/filebeat/filebeat.yml
 COPY ./packetbeat.yml /etc/packetbeat/packetbeat.yml
 COPY ./topbeat.yml /etc/topbeat/topbeat.yml
 
-RUN rm -f elastic* jdk* logstash* kibana*
-
 VOLUME /opt/kibana/config /etc/nginx /etc/elasticsearch /etc/logstash /etc/filebeat/ /etc/packetbeat/ /etc/topbeat/
 
 EXPOSE 22 80 443 5044 9200 9300
