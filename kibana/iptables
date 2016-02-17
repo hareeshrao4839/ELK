@@ -18,7 +18,7 @@ COMMIT
 -A INPUT -p tcp -m tcp --dport 80 -m state --state NEW -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 443 -m state --state NEW -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 9200 -m state --state NEW -j ACCEPT
--A INPUT -p tcp -m tcp --dport 9001 -m state --state NEW -j ACCEPT
+-A INPUT -p tcp -m tcp --dport 9300 -m state --state NEW -j ACCEPT
 -A INPUT -p tcp -m tcp --dport 5044 -m state --state NEW -j ACCEPT
 -A INPUT -j REJECT --reject-with icmp-host-prohibited
 COMMIT
