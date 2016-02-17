@@ -1,4 +1,4 @@
-network.host: ELK_SERVER_IP
+network.host: EL_SERVER_IP
 
 bootstrap.mlockall: true
 indices.memory.index_buffer_size: 50%

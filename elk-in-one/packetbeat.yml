@@ -1,0 +1,15 @@
+interfaces:
+  device: venet0:0
+protocols:
+  http:
+    ports: [80, 443]
+output:
+  logstash:
+    hosts: ["EL_SERVER_IP:5044"]
+    tls:
+      certificate_authorities: ["/etc/pki/tls/certs/logstash-forwarder.crt"]
+shipper:
+logging:
+  files:
+    rotateeverybytes: 10485760 # = 10MB
+

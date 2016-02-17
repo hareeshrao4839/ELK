@@ -1,0 +1,18 @@
+input:
+  period: 10
+  procs: [".*"]
+  stats:
+    system: true
+    proc: true
+    filesystem: true
+    cpu_per_core: false
+output:
+  logstash:
+    hosts: ["EL_SERVER_IP:5044"]
+    tls:
+      certificate_authorities: ["/etc/pki/tls/certs/logstash-forwarder.crt"]
+shipper:
+logging:
+  files:
+    rotateeverybytes: 10485760 # = 10MB
+

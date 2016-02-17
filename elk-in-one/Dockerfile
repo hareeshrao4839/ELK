@@ -45,7 +45,16 @@ RUN tar xf kibana-4.4.1-linux-x64.tar.gz && \
     rm -rf kibana*
 RUN chmod +x /tmp/load.sh /init.sh
 
-VOLUME /opt/kibana/config /etc/nginx /etc/elasticsearch /etc/logstash
+# Beats
+RUN wget -q https://download.elastic.co/beats/packetbeat/packetbeat-1.1.1-x86_64.rpm && \
+    wget -q https://download.elastic.co/beats/topbeat/topbeat-1.1.1-x86_64.rpm && \
+    wget -q https://download.elastic.co/beats/filebeat/filebeat-1.1.1-x86_64.rpm
+RUN yum localinstall -q -y packetbeat-1.1.1-x86_64.rpm topbeat-1.1.1-x86_64.rpm filebeat-1.1.1-x86_64.rpm
+COPY ./filebeat.yml /etc/filebeat/filebeat.yml
+COPY ./packetbeat.yml /etc/packetbeat/packetbeat.yml
+COPY ./topbeat.yml /etc/topbeat/topbeat.yml
+
+VOLUME /opt/kibana/config /etc/nginx /etc/elasticsearch /etc/logstash /etc/filebeat/ /etc/packetbeat/ /etc/topbeat/
 
 EXPOSE 22 80 443 5044 9200 9300
 
