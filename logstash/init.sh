@@ -8,6 +8,8 @@ if [ "$1" = 'init' ]; then
   systemctl enable iptables
   chkconfig logstash on
   systemctl restart iptables
+
+  # Jelastic specific instructions
   sed -i "/Extensions for a typical CA/a subjectAltName = IP: LO_SERVER_IP" /etc/pki/tls/openssl.cnf
   openssl req -config /etc/pki/tls/openssl.cnf -x509 -days 3650 -batch -nodes -newkey rsa:4096 -keyout /etc/pki/tls/private/logstash-forwarder.key -out /etc/pki/tls/certs/logstash-forwarder.crt
   ssh-keygen -q -t rsa -b 4096 -N "" -f /root/.ssh/id_rsa
