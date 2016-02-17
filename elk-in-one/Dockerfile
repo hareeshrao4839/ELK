@@ -1,7 +1,7 @@
 FROM bbania/centos:base
 MAINTAINER "Bart Bania" <contact@bartbania.com>
 
-RUN yum install -q -y iptables-services git nginx httpd-tools python-devel python-setuptools pip gcc
+RUN yum install -q -y iptables-services git nginx httpd-tools python-devel python-setuptools python-pip gcc
 RUN yum -q clean all
 
 COPY ./iptables /etc/sysconfig/iptables
