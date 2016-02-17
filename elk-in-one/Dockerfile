@@ -1,7 +1,7 @@
 FROM bbania/centos:base
 MAINTAINER "Bart Bania" <contact@bartbania.com>
 
-RUN yum install -q -y iptables-services git nginx httpd-tools
+RUN yum install -q -y iptables-services git nginx httpd-tools python-devel python-setuptools pip gcc
 RUN yum -q clean all
 
 COPY ./iptables /etc/sysconfig/iptables
@@ -53,6 +53,13 @@ RUN yum localinstall -q -y packetbeat-1.1.1-x86_64.rpm topbeat-1.1.1-x86_64.rpm 
 COPY ./filebeat.yml /etc/filebeat/filebeat.yml
 COPY ./packetbeat.yml /etc/packetbeat/packetbeat.yml
 COPY ./topbeat.yml /etc/topbeat/topbeat.yml
+
+# supervisor, elastalert & curator
+RUN easy_install -q -U setuptools && \
+    pip -q install --upgrade pip && \
+    yum install -q -y supervisor && \
+    pip -q install elastalert && \
+    pip -q install elasticsearch-curator
 
 VOLUME /opt/kibana/config /etc/nginx /etc/elasticsearch /etc/logstash /etc/filebeat/ /etc/packetbeat/ /etc/topbeat/
 
