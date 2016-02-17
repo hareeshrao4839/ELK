@@ -19,13 +19,11 @@ RUN wget -q --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3
 # Elasticsearch
 RUN wget -q https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/rpm/elasticsearch/2.2.0/elasticsearch-2.2.0.rpm && \
     yum localinstall -q -y elasticsearch-2.2.0.rpm
-RUN rm -rf elastic* jdk*
 COPY ./elasticsearch.yml /etc/elasticsearch/
 
 # Logstash
 RUN wget -q https://download.elastic.co/logstash/logstash/packages/centos/logstash-2.2.1-1.noarch.rpm && \
     yum localinstall -q -y logstash-2.2.1-1.noarch.rpm
-RUN rm -rf logstash* jdk*
 COPY ./patterns /etc/logstash/patterns
 COPY ./GeoLiteCity.dat /etc/logstash/GeoLiteCity.dat
 COPY ./conf.d /etc/logstash/conf.d
@@ -41,13 +39,11 @@ RUN groupadd -g 1005 kibana && \
 COPY ./kibana-init /etc/init.d/kibana
 COPY ./kibana-default /etc/default/kibana
 RUN chmod +x /etc/init.d/kibana
-WORKDIR /tmp
 RUN wget -q https://download.elastic.co/kibana/kibana/kibana-4.4.1-linux-x64.tar.gz
 RUN tar xf kibana-4.4.1-linux-x64.tar.gz && \
     cp -r kibana*/* /opt/kibana && \
     cp kibana.yml /opt/kibana/config/kibana.yml && \
-    chown -R kibana: /opt/kibana && \
-    rm -rf kibana*
+    chown -R kibana: /opt/kibana
 RUN chmod +x /tmp/load.sh /init.sh
 
 # Beats
@@ -58,6 +54,8 @@ RUN yum localinstall -q -y packetbeat-1.1.1-x86_64.rpm topbeat-1.1.1-x86_64.rpm 
 COPY ./filebeat.yml /etc/filebeat/filebeat.yml
 COPY ./packetbeat.yml /etc/packetbeat/packetbeat.yml
 COPY ./topbeat.yml /etc/topbeat/topbeat.yml
+
+RUN rm -f elastic* jdk* logstash* kibana*
 
 VOLUME /opt/kibana/config /etc/nginx /etc/elasticsearch /etc/logstash /etc/filebeat/ /etc/packetbeat/ /etc/topbeat/
 
