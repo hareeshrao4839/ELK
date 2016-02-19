@@ -38,7 +38,8 @@ RUN set -ex \
         chown -R elasticsearch:elasticsearch "$path"; \
     done
 
-COPY ./elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml
+COPY ./elasticsearch.yml ./logging.yml /usr/share/elasticsearch/config/
+RUN chown -R elasticsearch: /usr/share/elasticsearch
 
 ENV PATH /usr/share/elasticsearch/bin:$PATH
 

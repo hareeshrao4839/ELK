@@ -34,11 +34,11 @@ RUN set -x && \
     chmod +x /usr/local/bin/tini
 
 # Config files
-COPY ./cron /var/spool/cron/root
+COPY ./cron /var/spool/cron/logstash
 COPY ./init.sh /
 COPY ./entrypoint.sh /
 COPY ./patterns /etc/logstash/patterns
-COPY ./GeoLiteCity.dat /etc/logstash/GeoLiteCity.dat
+COPY ./GeoLiteCity.dat ./GeoLiteCountry.dat /etc/logstash/
 COPY ./conf.d /etc/logstash/conf.d
 
 RUN chown -R logstash: /etc/logstash
@@ -50,5 +50,5 @@ VOLUME /root /etc/logstash
 EXPOSE 5044
 
 ENTRYPOINT [ "/entrypoint.sh" ]
-CMD [ "logstash", "agent", "-f /etc/logstash/conf.d" ]
+CMD [ "logstash", "agent", "-f /etc/logstash/conf.d", "-l /var/log/logstash/logstash.log" ]
 
