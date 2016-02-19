@@ -13,8 +13,6 @@ if [ "$1" = 'kibana' ]; then
   systemctl enable iptables
   systemctl restart iptables
 
-  sed -i "s/EL_SERVER_IP/ELASTIC_IP/g" /opt/kibana/config/kibana.yml
-
   nginx &
   gosu kibana tini -- "$@"
 fi
