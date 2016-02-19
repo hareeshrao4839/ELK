@@ -24,7 +24,19 @@ RUN wget -q https://download.elasticsearch.org/elasticsearch/release/org/elastic
 COPY ./iptables /etc/sysconfig/iptables
 COPY ./init.sh /
 COPY ./entrypoint.sh /
-COPY ./elasticsearch.yml /etc/elasticsearch/
+
+RUN set -ex \
+    && for path in \
+        /usr/share/elasticsearch/data \
+        /usr/share/elasticsearch/logs \
+        /usr/share/elasticsearch/config \
+        /usr/share/elasticsearch/config/scripts \
+    ; do \
+        mkdir -p "$path"; \
+        chown -R elasticsearch:elasticsearch "$path"; \
+    done
+
+COPY ./elasticsearch.yml /usr/share/elasticsearch/config/elasticsearch.yml
 
 ENV PATH /usr/share/elasticsearch/bin:$PATH
 
