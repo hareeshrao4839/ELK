@@ -26,12 +26,12 @@ RUN set -x && \
     chmod +x /usr/local/bin/tini
 
 COPY ./iptables /etc/sysconfig/iptables
-COPY ./init.sh /
+COPY ./entrypoint.sh ./init.sh /
 COPY ./topbeat.template.json ./filebeat.template.json ./packetbeat.template.json ./kibana.yml ./load.sh /tmp/
 COPY ./dashboards /tmp/dashboards
 COPY ./nginx.conf /etc/nginx/
 COPY ./kibana.conf /etc/nginx/conf.d/
-RUN chmod +x /tmp/load.sh /init.sh
+RUN chmod +x /tmp/load.sh /init.sh /entrypoint.sh
 
 RUN groupadd -g 1005 kibana && \
     useradd -u 1005 -g 1005 kibana && \
@@ -46,9 +46,6 @@ RUN tar xf kibana-4.4.1-linux-x64.tar.gz && \
     rm -rf kibana*
 
 ENV PATH /opt/kibana/bin:$PATH
-
-COPY ./entrypoint.sh /
-RUN chmod +x /entrypoint.sh
 
 VOLUME /root /opt/kibana/config /etc/nginx
 

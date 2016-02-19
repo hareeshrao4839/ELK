@@ -41,12 +41,14 @@ COPY ./patterns /etc/logstash/patterns
 COPY ./GeoLiteCity.dat /etc/logstash/GeoLiteCity.dat
 COPY ./conf.d /etc/logstash/conf.d
 
+RUN chown -R logstash: /etc/logstash
+
 ENV PATH /opt/logstash/bin:$PATH
  
 VOLUME /root /etc/logstash
 
 EXPOSE 5044
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["logstash", "agent"]
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD [ "logstash", "agent", "-f /etc/logstash/conf.d" ]
 
