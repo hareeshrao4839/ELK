@@ -34,6 +34,7 @@ RUN set -x && \
     chmod +x /usr/local/bin/tini
 
 # Config files
+COPY ./iptables /etc/sysconfig/iptables
 COPY ./cron /var/spool/cron/logstash
 COPY ./init.sh /
 COPY ./entrypoint.sh /

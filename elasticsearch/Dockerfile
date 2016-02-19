@@ -24,6 +24,7 @@ RUN wget -q https://download.elasticsearch.org/elasticsearch/release/org/elastic
 RUN easy_install -q -U setuptools && \
     pip -q install elasticsearch-curator
 
+COPY ./iptables /etc/sysconfig/iptables
 COPY ./init.sh /
 COPY ./entrypoint.sh /
 

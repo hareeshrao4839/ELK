@@ -25,6 +25,7 @@ RUN set -x && \
     rm -r "$GNUPGHOME" /usr/local/bin/tini.asc && \
     chmod +x /usr/local/bin/tini
 
+COPY ./iptables /etc/sysconfig/iptables
 COPY ./entrypoint.sh ./init.sh /
 COPY ./topbeat.template.json ./filebeat.template.json ./packetbeat.template.json ./kibana.yml ./load.sh /tmp/
 COPY ./dashboards /tmp/dashboards
