@@ -47,6 +47,6 @@ VOLUME /root /etc/logstash
 
 EXPOSE 5044
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
 CMD ["logstash", "agent"]
 

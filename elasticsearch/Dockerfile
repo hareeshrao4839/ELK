@@ -5,18 +5,33 @@ MAINTAINER "Bart Bania" <contact@bartbania.com>
 RUN yum install -q -y iptables-services git sshpass
 RUN yum clean all
 
+# Setup gosu for easier command execution
+RUN gpg --keyserver pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+    && curl -q -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.2/gosu-amd64" \
+    && curl -q -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.2/gosu-amd64.asc" \
+    && gpg --verify /usr/local/bin/gosu.asc \
+    && rm /usr/local/bin/gosu.asc \
+    && rm -r /root/.gnupg/ \
+    && chmod +x /usr/local/bin/gosu
+
 WORKDIR /tmp
 RUN wget -q --no-cookies --no-check-certificate --header "Cookie: gpw_e24=http%3A%2F%2Fwww.oracle.com%2F; oraclelicense=accept-securebackup-cookie" -O jdk-8u73-linux-x64.rpm "http://download.oracle.com/otn-pub/java/jdk/8u73-b02/jdk-8u73-linux-x64.rpm" && \
     yum localinstall -q -y jdk-8u73-linux-x64.rpm
 RUN wget -q https://download.elasticsearch.org/elasticsearch/release/org/elasticsearch/distribution/rpm/elasticsearch/2.2.0/elasticsearch-2.2.0.rpm && \
-    yum localinstall -q -y elasticsearch-2.2.0.rpm
-RUN rm -rf elastic* jdk*
+    yum localinstall -q -y elasticsearch-2.2.0.rpm && \
+     rm -rf elastic* jdk*
 
 COPY ./iptables /etc/sysconfig/iptables
 COPY ./init.sh /
+COPY ./entrypoint.sh /
 COPY ./elasticsearch.yml /etc/elasticsearch/
 
-VOLUME /root /etc/elasticsearch
+ENV PATH /usr/share/elasticsearch/bin:$PATH
+
+VOLUME /root /etc/elasticsearch /var/lib/elasticsearch
 
 EXPOSE 9200 9300
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["elasticsearch"]
 
