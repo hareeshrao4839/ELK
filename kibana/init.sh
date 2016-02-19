@@ -8,8 +8,6 @@ SED=`which sed`
 ELASTIC_IP='ELK_SERVER_IP'
 
 if [ "$1" = 'init' ]; then
-  #Start services
-
   #Elasticsearch IP
   #$SED -i "s/EL_SERVER_IP/ELASTIC_IP/g" /opt/kibana/config/kibana.yml
 

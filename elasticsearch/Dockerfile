@@ -2,7 +2,7 @@
 FROM bbania/centos:base
 MAINTAINER "Bart Bania" <contact@bartbania.com>
 
-RUN yum install -q -y iptables-services git sshpass
+RUN yum install -q -y iptables-services git sshpass python-devel python-setuptools python-pip
 RUN yum clean all
 
 # Setup gosu for easier command execution
@@ -21,7 +21,9 @@ RUN wget -q https://download.elasticsearch.org/elasticsearch/release/org/elastic
     yum localinstall -q -y elasticsearch-2.2.0.rpm && \
      rm -rf elastic* jdk*
 
-COPY ./iptables /etc/sysconfig/iptables
+RUN easy_install -q -U setuptools && \
+    pip -q install elasticsearch-curator
+
 COPY ./init.sh /
 COPY ./entrypoint.sh /
 

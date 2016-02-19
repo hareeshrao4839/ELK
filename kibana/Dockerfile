@@ -25,7 +25,6 @@ RUN set -x && \
     rm -r "$GNUPGHOME" /usr/local/bin/tini.asc && \
     chmod +x /usr/local/bin/tini
 
-COPY ./iptables /etc/sysconfig/iptables
 COPY ./entrypoint.sh ./init.sh /
 COPY ./topbeat.template.json ./filebeat.template.json ./packetbeat.template.json ./kibana.yml ./load.sh /tmp/
 COPY ./dashboards /tmp/dashboards
@@ -49,7 +48,7 @@ ENV PATH /opt/kibana/bin:$PATH
 
 VOLUME /root /opt/kibana/config /etc/nginx
 
-EXPOSE 22 80 443 5044 9200
+EXPOSE 22 80 443
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["kibana"]

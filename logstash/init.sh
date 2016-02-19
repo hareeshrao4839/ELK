@@ -5,8 +5,6 @@ set -e
 if [ "$1" = 'init' ]; then
   #Start services
   systemctl daemon-reload
-  systemctl enable iptables
-  systemctl restart iptables
 
   # Jelastic specific instructions
   #sed -i "/Extensions for a typical CA/a subjectAltName = IP: LO_SERVER_IP" /etc/pki/tls/openssl.cnf

@@ -35,7 +35,6 @@ RUN set -x && \
 
 # Config files
 COPY ./cron /var/spool/cron/root
-COPY ./iptables /etc/sysconfig/iptables
 COPY ./init.sh /
 COPY ./entrypoint.sh /
 COPY ./patterns /etc/logstash/patterns
