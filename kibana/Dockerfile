@@ -23,8 +23,7 @@ RUN set -x && \
     gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 6380DC428747F6C393FEACA59A84159D7001A4E5 && \
     gpg --verify /usr/local/bin/tini.asc && \
     rm -r "$GNUPGHOME" /usr/local/bin/tini.asc && \
-    chmod +x /usr/local/bin/tini && \
-    tini -h
+    chmod +x /usr/local/bin/tini
 
 COPY ./iptables /etc/sysconfig/iptables
 COPY ./init.sh /
@@ -48,7 +47,8 @@ RUN tar xf kibana-4.4.1-linux-x64.tar.gz && \
 
 ENV PATH /opt/kibana/bin:$PATH
 
-COPY entrypoint.sh /
+COPY ./entrypoint.sh /
+RUN chmod +x /entrypoint.sh
 
 VOLUME /root /opt/kibana/config /etc/nginx
 

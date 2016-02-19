@@ -1,0 +1,4 @@
+MAILTO=""
+
+18 16 * * 4 /usr/local/bin/geoipupdate -d /etc/logstash/ 2>&1
+

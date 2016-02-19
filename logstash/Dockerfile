@@ -2,7 +2,7 @@
 FROM bbania/centos:base
 MAINTAINER "Bart Bania" <contact@bartbania.com>
 
-RUN yum install -q -y iptables-services git sshpass
+RUN yum install -q -y iptables-services git GeoIP-update sshpass
 RUN yum clean all
 
 WORKDIR /tmp
@@ -12,14 +12,41 @@ RUN wget -q https://download.elastic.co/logstash/logstash/packages/centos/logsta
     yum localinstall -q -y logstash-2.2.1-1.noarch.rpm
 RUN rm -rf logstash* jdk*
 
+# Setup gosu for easier command execution
+RUN gpg --keyserver pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4036A9C25BF357DD4 \
+    && curl -q -o /usr/local/bin/gosu -SL "https://github.com/tianon/gosu/releases/download/1.2/gosu-amd64" \
+    && curl -q -o /usr/local/bin/gosu.asc -SL "https://github.com/tianon/gosu/releases/download/1.2/gosu-amd64.asc" \
+    && gpg --verify /usr/local/bin/gosu.asc \
+    && rm /usr/local/bin/gosu.asc \
+    && rm -r /root/.gnupg/ \
+    && chmod +x /usr/local/bin/gosu
+
+# Add Tini
+ENV TINI_VERSION v0.9.0
+RUN set -x && \
+    wget -q -O /usr/local/bin/tini https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini && \
+    wget -q -O /usr/local/bin/tini.asc https://github.com/krallin/tini/releases/download/$TINI_VERSION/tini.asc && \
+    export GNUPGHOME="$(mktemp -d)" && \
+    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 6380DC428747F6C393FEACA59A84159D7001A4E5 && \
+    gpg --verify /usr/local/bin/tini.asc && \
+    rm -r "$GNUPGHOME" /usr/local/bin/tini.asc && \
+    chmod +x /usr/local/bin/tini
+
 # Config files
+COPY ./cron /var/spool/cron/root
 COPY ./iptables /etc/sysconfig/iptables
 COPY ./init.sh /
+COPY ./entrypoint.sh /
 COPY ./patterns /etc/logstash/patterns
 COPY ./GeoLiteCity.dat /etc/logstash/GeoLiteCity.dat
 COPY ./conf.d /etc/logstash/conf.d
 
+ENV PATH /opt/logstash/bin:$PATH
+ 
 VOLUME /root /etc/logstash
 
 EXPOSE 5044
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["logstash", "agent"]
 
