@@ -3,17 +3,15 @@
 set -e
 
 CURL=`which curl`
+SED=`which sed`
+
 ELASTIC_IP='ELK_SERVER_IP'
 
 if [ "$1" = 'init' ]; then
   #Start services
-  systemctl daemon-reload
-  systemctl enable iptables
-  systemctl enable nginx
-  chkconfig kibana on
-  systemctl restart iptables
-  systemctl restart nginx
-  /etc/init.d/kibana restart
+
+  #Elasticsearch IP
+  $SED -i "s/EL_SERVER_IP/ELASTIC_IP/g" /opt/kibana/config/kibana.yml
 
   #Add templates
   cd /tmp; ./load.sh
