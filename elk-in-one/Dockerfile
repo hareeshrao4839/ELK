@@ -58,7 +58,8 @@ COPY ./filebeat.yml /etc/filebeat/filebeat.yml
 COPY ./packetbeat.yml /etc/packetbeat/packetbeat.yml
 COPY ./topbeat.yml /etc/topbeat/topbeat.yml
 
-ENV LS_HEAP_SIZE=2048m
+ENV LS_HEAP_SIZE=1g
+ENV ES_HEAP_SIZE=1g
 
 VOLUME /opt/kibana/config /etc/nginx /etc/elasticsearch /etc/logstash /etc/filebeat /etc/packetbeat /etc/topbeat /var/lib/elasticsearch
 

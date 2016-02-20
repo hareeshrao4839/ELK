@@ -45,7 +45,7 @@ COPY ./elasticsearch.yml ./logging.yml /usr/share/elasticsearch/config/
 RUN chown -R elasticsearch: /usr/share/elasticsearch
 
 ENV PATH /usr/share/elasticsearch/bin:$PATH
-ENV LS_HEAP_SIZE=2048m
+ENV ES_HEAP_SIZE=1g
 
 VOLUME /root /etc/elasticsearch /var/lib/elasticsearch
 

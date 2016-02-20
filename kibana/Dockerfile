@@ -45,7 +45,7 @@ COPY ./entrypoint.sh ./init.sh /
 COPY ./topbeat.template.json ./filebeat.template.json ./packetbeat.template.json /tmp/
 COPY ./nginx.conf /etc/nginx/
 COPY ./kibana.conf /etc/nginx/conf.d/
-COPY ./kibana.yml /opt/kibana
+COPY ./kibana.yml /opt/kibana/config/kibana.yml
 COPY ./load.sh /tmp/beats-dashboards-1.1.0/
 RUN chown -R kibana: /opt/kibana
 RUN chmod +x /init.sh /entrypoint.sh
