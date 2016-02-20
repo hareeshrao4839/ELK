@@ -4,7 +4,7 @@ MAINTAINER "Bart Bania" <contact@bartbania.com>
 
 ENV LANG en_US.utf8
 
-RUN yum -q -y install nginx httpd-tools iptables-services git sshpass
+RUN yum -q -y install unzip nginx httpd-tools iptables-services git sshpass
 RUN yum clean all
 
 # Setup gosu for easier command execution
@@ -29,17 +29,20 @@ RUN set -x && \
 
 COPY ./iptables /etc/sysconfig/iptables
 COPY ./entrypoint.sh ./init.sh /
-COPY ./topbeat.template.json ./filebeat.template.json ./packetbeat.template.json ./kibana.yml ./load.sh /tmp/
-COPY ./dashboards /tmp/dashboards
+COPY ./topbeat.template.json ./filebeat.template.json ./packetbeat.template.json ./kibana.yml /tmp/
 COPY ./nginx.conf /etc/nginx/
 COPY ./kibana.conf /etc/nginx/conf.d/
-RUN chmod +x /tmp/load.sh /init.sh /entrypoint.sh
+RUN chmod +x /init.sh /entrypoint.sh
 
 RUN groupadd -g 1005 kibana && \
     useradd -u 1005 -g 1005 kibana && \
     mkdir /opt/kibana
 
 WORKDIR /tmp
+RUN wget -q https://download.elastic.co/beats/dashboards/beats-dashboards-1.1.0.zip && \
+    unzip -qq beats-dashboards-*.zip && \
+    rm -rf beats-dashboards-*.zip
+COPY ./load.sh /tmp/beats-dashboards-1.1.0/
 RUN wget -q https://download.elastic.co/kibana/kibana/kibana-4.4.1-linux-x64.tar.gz
 RUN tar xf kibana-4.4.1-linux-x64.tar.gz && \
     cp -r kibana*/* /opt/kibana && \
@@ -53,6 +56,6 @@ VOLUME /root /opt/kibana/config /etc/nginx
 
 EXPOSE 22 80 443
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["kibana"]
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD [ "kibana" ]
 
