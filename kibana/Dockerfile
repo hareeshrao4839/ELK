@@ -27,13 +27,6 @@ RUN set -x && \
     rm -r "$GNUPGHOME" /usr/local/bin/tini.asc && \
     chmod +x /usr/local/bin/tini
 
-COPY ./iptables /etc/sysconfig/iptables
-COPY ./entrypoint.sh ./init.sh /
-COPY ./topbeat.template.json ./filebeat.template.json ./packetbeat.template.json ./kibana.yml /tmp/
-COPY ./nginx.conf /etc/nginx/
-COPY ./kibana.conf /etc/nginx/conf.d/
-RUN chmod +x /init.sh /entrypoint.sh
-
 RUN groupadd -g 1005 kibana && \
     useradd -u 1005 -g 1005 kibana && \
     mkdir /opt/kibana
@@ -42,13 +35,20 @@ WORKDIR /tmp
 RUN wget -q https://download.elastic.co/beats/dashboards/beats-dashboards-1.1.0.zip && \
     unzip -qq beats-dashboards-*.zip && \
     rm -rf beats-dashboards-*.zip
-COPY ./load.sh /tmp/beats-dashboards-1.1.0/
 RUN wget -q https://download.elastic.co/kibana/kibana/kibana-4.4.1-linux-x64.tar.gz
 RUN tar xf kibana-4.4.1-linux-x64.tar.gz && \
     cp -r kibana*/* /opt/kibana && \
-    cp kibana.yml /opt/kibana/config/kibana.yml && \
-    chown -R kibana: /opt/kibana && \
     rm -rf kibana*
+
+COPY ./iptables /etc/sysconfig/iptables
+COPY ./entrypoint.sh ./init.sh /
+COPY ./topbeat.template.json ./filebeat.template.json ./packetbeat.template.json /tmp/
+COPY ./nginx.conf /etc/nginx/
+COPY ./kibana.conf /etc/nginx/conf.d/
+COPY ./kibana.yml /opt/kibana
+COPY ./load.sh /tmp/beats-dashboards-1.1.0/
+RUN chown -R kibana: /opt/kibana
+RUN chmod +x /init.sh /entrypoint.sh
 
 ENV PATH /opt/kibana/bin:$PATH
 
