@@ -47,6 +47,7 @@ COPY ./conf.d /etc/logstash/conf.d
 RUN chown -R logstash: /etc/logstash
 
 ENV PATH /opt/logstash/bin:$PATH
+ENV LS_HEAP_SIZE=2048m
  
 VOLUME /root /etc/logstash
 
