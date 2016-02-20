@@ -31,6 +31,23 @@
         "offset": {
           "type": "long",
           "doc_values": "true"
+        },
+        "geoip" : {
+          "dynamic" : "true",
+          "properties" : {
+            "ip" : {
+              "type" : "ip"
+            },
+            "latitude" : {
+              "type" : "float"
+            },
+            "location" : {
+              "type" : "geo_point"
+            },
+            "longitude" : {
+              "type" : "float"
+            }
+          }
         }
       }
     }
