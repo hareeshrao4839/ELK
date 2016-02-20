@@ -1,7 +1,7 @@
 FROM bbania/centos:base
 MAINTAINER "Bart Bania" <contact@bartbania.com>
 
-RUN yum install -q -y iptables-services git nginx httpd-tools python-devel python-setuptools python-pip gcc supervisor
+RUN yum install -q -y unzip git nginx httpd-tools python-devel python-setuptools python-pip gcc supervisor
 RUN yum -q clean all
 
 # supervisor, elastalert & curator
@@ -9,7 +9,7 @@ RUN easy_install -q -U setuptools &&\
     pip -q install elastalert && \
     pip -q install elasticsearch-curator
 
-COPY ./iptables /etc/sysconfig/iptables
+#COPY ./iptables /etc/sysconfig/iptables
 COPY ./init.sh /
 
 WORKDIR /tmp
@@ -29,8 +29,7 @@ COPY ./GeoLiteCity.dat /etc/logstash/GeoLiteCity.dat
 COPY ./conf.d /etc/logstash/conf.d
 
 # Kibana
-COPY ./topbeat.template.json ./filebeat.template.json ./packetbeat.template.json ./kibana.yml ./load.sh /tmp/
-COPY ./dashboards /tmp/dashboards
+COPY ./topbeat.template.json ./filebeat.template.json ./packetbeat.template.json ./kibana.yml /tmp/
 COPY ./nginx.conf /etc/nginx/
 COPY ./kibana.conf /etc/nginx/conf.d/
 RUN groupadd -g 1005 kibana && \
@@ -39,12 +38,16 @@ RUN groupadd -g 1005 kibana && \
 COPY ./kibana-init /etc/init.d/kibana
 COPY ./kibana-default /etc/default/kibana
 RUN chmod +x /etc/init.d/kibana
-RUN wget -q https://download.elastic.co/kibana/kibana/kibana-4.4.1-linux-x64.tar.gz
-RUN tar xf kibana-4.4.1-linux-x64.tar.gz && \
+RUN wget -q https://download.elastic.co/beats/dashboards/beats-dashboards-1.1.0.zip && \
+    unzip -qq beats-dashboards-*.zip && \
+    rm -rf beats-dashboards-*.zip
+RUN wget -q https://download.elastic.co/kibana/kibana/kibana-4.4.1-linux-x64.tar.gz && \
+    tar xf kibana-4.4.1-linux-x64.tar.gz && \
     cp -r kibana*/* /opt/kibana && \
     cp kibana.yml /opt/kibana/config/kibana.yml && \
     chown -R kibana: /opt/kibana
-RUN chmod +x /tmp/load.sh /init.sh
+COPY ./load.sh /tmp/beats-dashboards-1.1.0/
+RUN chmod +x /init.sh
 
 # Beats
 RUN wget -q https://download.elastic.co/beats/packetbeat/packetbeat-1.1.1-x86_64.rpm && \
@@ -55,7 +58,7 @@ COPY ./filebeat.yml /etc/filebeat/filebeat.yml
 COPY ./packetbeat.yml /etc/packetbeat/packetbeat.yml
 COPY ./topbeat.yml /etc/topbeat/topbeat.yml
 
-VOLUME /opt/kibana/config /etc/nginx /etc/elasticsearch /etc/logstash /etc/filebeat/ /etc/packetbeat/ /etc/topbeat/
+VOLUME /opt/kibana/config /etc/nginx /etc/elasticsearch /etc/logstash /etc/filebeat /etc/packetbeat /etc/topbeat /var/lib/elasticsearch
 
-EXPOSE 22 80 443 5044 9200 9300
+EXPOSE 22 80 443
 

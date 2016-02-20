@@ -2,6 +2,8 @@
 FROM bbania/centos:base
 MAINTAINER "Bart Bania" <contact@bartbania.com>
 
+ENV LANG en_US.utf8
+
 RUN yum install -q -y iptables-services git sshpass python-devel python-setuptools python-pip
 RUN yum clean all
 
@@ -48,6 +50,6 @@ VOLUME /root /etc/elasticsearch /var/lib/elasticsearch
 
 EXPOSE 9200 9300
 
-ENTRYPOINT ["/entrypoint.sh"]
-CMD ["elasticsearch"]
+ENTRYPOINT [ "/entrypoint.sh" ]
+CMD [ "elasticsearch", "-Des.default.path.logs=/var/log/elasticsearch" ]
 

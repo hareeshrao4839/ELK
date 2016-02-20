@@ -2,6 +2,8 @@
 FROM bbania/centos:base
 MAINTAINER "Bart Bania" <contact@bartbania.com>
 
+ENV LANG en_US.utf8
+
 RUN yum -q -y install nginx httpd-tools iptables-services git sshpass
 RUN yum clean all
 

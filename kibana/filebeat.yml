@@ -8,6 +8,11 @@ filebeat:
       document_type: syslog
     -
       paths:
+        - "/var/log/fail2ban.log"
+      input_type: log
+      document_type: fail2ban
+    -
+      paths:
         - /var/log/cron
       input_type: log
       document_type: cron-log
@@ -21,7 +26,7 @@ filebeat:
 
 output:
   logstash:
-    hosts: ["EL_SERVER_IP:5044"]
+    hosts: [":5044"]
 
     tls:
       certificate_authorities: ["/etc/pki/tls/certs/logstash-forwarder.crt"]
