@@ -2,9 +2,10 @@
 FROM bbania/centos:base
 MAINTAINER "Bart Bania" <contact@bartbania.com>
 
+ENV LS_HEAP_SIZE=2g
 ENV LANG en_US.utf8
 
-RUN yum install -q -y iptables-services git GeoIP-update sshpass
+RUN yum install -q -y iptables-services git GeoIP-update sshpass python-pip
 RUN yum clean all
 
 WORKDIR /tmp
@@ -35,7 +36,11 @@ RUN set -x && \
     rm -r "$GNUPGHOME" /usr/local/bin/tini.asc && \
     chmod +x /usr/local/bin/tini
 
+# Supervisor
+RUN pip -q install supervisor
+
 # Config files
+COPY ./supervisord.conf /etc/supervisord.conf
 COPY ./iptables /etc/sysconfig/iptables
 COPY ./cron /var/spool/cron/logstash
 COPY ./init.sh /
@@ -44,15 +49,15 @@ COPY ./patterns /etc/logstash/patterns
 COPY ./GeoLiteCity.dat ./GeoLiteCountry.dat /etc/logstash/
 COPY ./conf.d /etc/logstash/conf.d
 
-RUN chown -R logstash: /etc/logstash
+RUN mkdir /var/log/supervisor
+RUN chown -R logstash: /etc/logstash /etc/supervisord.conf
 
 ENV PATH /opt/logstash/bin:$PATH
-ENV LS_HEAP_SIZE=1g
  
 VOLUME /root /etc/logstash
 
 EXPOSE 5044
 
 ENTRYPOINT [ "/entrypoint.sh" ]
-CMD [ "logstash", "agent", "-f /etc/logstash/conf.d", "-l /var/log/logstash/logstash.log" ]
+CMD [ "supervisord", "-c /etc/supervisord.conf" ]
 
