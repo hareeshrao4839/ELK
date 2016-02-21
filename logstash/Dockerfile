@@ -25,17 +25,6 @@ RUN gpg --keyserver pool.sks-keyservers.net --recv-keys B42F6819007F00F88E364FD4
     && rm -r /root/.gnupg/ \
     && chmod +x /usr/local/bin/gosu
 
-# Add Tini
-ENV TINI_VERSION v0.9.0
-RUN set -x && \
-    wget -q -O /usr/local/bin/tini https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini && \
-    wget -q -O /usr/local/bin/tini.asc https://github.com/krallin/tini/releases/download/$TINI_VERSION/tini.asc && \
-    export GNUPGHOME="$(mktemp -d)" && \
-    gpg --keyserver ha.pool.sks-keyservers.net --recv-keys 6380DC428747F6C393FEACA59A84159D7001A4E5 && \
-    gpg --verify /usr/local/bin/tini.asc && \
-    rm -r "$GNUPGHOME" /usr/local/bin/tini.asc && \
-    chmod +x /usr/local/bin/tini
-
 # Supervisor
 RUN pip -q install supervisor
 
