@@ -23,13 +23,6 @@ RUN wget -q https://download.elasticsearch.org/elasticsearch/release/org/elastic
     yum localinstall -q -y elasticsearch-2.2.0.rpm && \
      rm -rf elastic* jdk*
 
-RUN easy_install -q -U setuptools && \
-    pip -q install elasticsearch-curator
-
-COPY ./iptables /etc/sysconfig/iptables
-COPY ./init.sh /
-COPY ./entrypoint.sh /
-
 RUN set -ex \
     && for path in \
         /usr/share/elasticsearch/data \
@@ -41,11 +34,22 @@ RUN set -ex \
         chown -R elasticsearch:elasticsearch "$path"; \
     done
 
+RUN easy_install -q -U setuptools && \
+    pip -q install elasticsearch-curator && \
+    pip -q install supervisor
+
+# Config files
+COPY ./supervisord.conf /etc/supervisord.conf
+COPY ./iptables /etc/sysconfig/iptables
+COPY ./init.sh /
+COPY ./entrypoint.sh /
+
 COPY ./elasticsearch.yml ./logging.yml /usr/share/elasticsearch/config/
-RUN chown -R elasticsearch: /usr/share/elasticsearch
+RUN mkdir /var/log/supervisor
+RUN chown -R elasticsearch: /usr/share/elasticsearch /etc/supervisord.conf
 
 ENV PATH /usr/share/elasticsearch/bin:$PATH
-ENV ES_HEAP_SIZE=1g
+ENV ES_HEAP_SIZE=2g
 
 VOLUME /root /etc/elasticsearch /var/lib/elasticsearch
 
