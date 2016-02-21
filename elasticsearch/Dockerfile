@@ -3,6 +3,7 @@ FROM bbania/centos:base
 MAINTAINER "Bart Bania" <contact@bartbania.com>
 
 ENV LANG en_US.utf8
+ENV ES_HEAP_SIZE=2g
 
 RUN yum install -q -y iptables-services git sshpass python-devel python-setuptools python-pip
 RUN yum clean all
@@ -49,12 +50,11 @@ RUN mkdir /var/log/supervisor
 RUN chown -R elasticsearch: /usr/share/elasticsearch /etc/supervisord.conf
 
 ENV PATH /usr/share/elasticsearch/bin:$PATH
-ENV ES_HEAP_SIZE=2g
 
 VOLUME /root /etc/elasticsearch /var/lib/elasticsearch
 
 EXPOSE 9200 9300
 
 ENTRYPOINT [ "/entrypoint.sh" ]
-CMD [ "elasticsearch", "-Des.default.path.logs=/var/log/elasticsearch" ]
+CMD [ "supervisord", "-c /etc/supervisord.conf" ]
 
