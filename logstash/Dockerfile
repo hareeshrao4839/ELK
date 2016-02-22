@@ -39,6 +39,7 @@ COPY ./patterns /etc/logstash/patterns
 COPY ./GeoLiteCity.dat ./GeoLiteCountry.dat /etc/logstash/
 COPY ./conf.d /etc/logstash/conf.d
 
+RUN mkdir /root/certs
 RUN chmod 600 /etc/rsyncd.secrets
 RUN mkdir /var/log/supervisor
 RUN chown -R logstash: /etc/logstash /etc/supervisord.conf
