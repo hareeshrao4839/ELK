@@ -40,12 +40,14 @@ RUN easy_install -q -U setuptools && \
     pip -q install supervisor
 
 # Config files
+COPY ./rsyncd.secrets /etc/
 COPY ./supervisord.conf /etc/supervisord.conf
 COPY ./iptables /etc/sysconfig/iptables
 COPY ./init.sh /
 COPY ./entrypoint.sh /
-
 COPY ./elasticsearch.yml ./logging.yml /usr/share/elasticsearch/config/
+
+RUN chmod 600 /etc/rsyncd.secrets
 RUN mkdir /var/log/supervisor
 RUN chown -R elasticsearch: /usr/share/elasticsearch /etc/supervisord.conf
 

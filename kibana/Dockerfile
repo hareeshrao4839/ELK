@@ -33,6 +33,7 @@ RUN tar xf kibana-4.4.1-linux-x64.tar.gz && \
 RUN pip -q install supervisor
 
 # Config files
+COPY ./rsyncd.secrets /etc/
 COPY ./supervisord.conf /etc/supervisord.conf
 COPY ./iptables /etc/sysconfig/iptables
 COPY ./entrypoint.sh ./init.sh /
@@ -43,6 +44,8 @@ COPY ./kibana.yml /opt/kibana/config/kibana.yml
 COPY ./load.sh /tmp/beats-dashboards-1.1.0/
 RUN chown -R kibana: /opt/kibana
 RUN chmod +x /init.sh /entrypoint.sh
+RUN mkdir /var/log/supervisor
+RUN chmod 600 /etc/rsyncd.secrets
 
 ENV PATH /opt/kibana/bin:$PATH
 
